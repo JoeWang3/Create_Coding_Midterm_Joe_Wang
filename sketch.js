@@ -1,4 +1,5 @@
 let sunFlowers = [];
+x = 0;
 function setup() {
   createCanvas(1200, 800);
 }
@@ -6,7 +7,7 @@ function setup() {
 function draw() {
   background(255);
   for(let i = 100; i < 1200; i += 200){
-    for(let j = 100; j < 800; j += 250){
+    for(let j = 350; j < 800; j += 250){
       let sun_flower = new Sunflower(i, j, 1);
       sunFlowers.push(sun_flower);
     }
@@ -15,6 +16,12 @@ function draw() {
     sunFlowers[i].display();
   }
 
+  let bird = new Bird(x, 100, 1);
+  x+=10;
+  if(x>=1200){
+    x = 0;
+  }
+  bird.display();
 
 
 }
@@ -66,6 +73,38 @@ class Sunflower{
     ellipse(this.x_co+20, this.y_co+120, 40, 20);
 
     drawGrid(this.x_co, this.y_co, 55);
+
+  }
+  
+}
+
+class Bird{
+  constructor(x_co, y_co, scale){
+    this.x = x_co;
+    this.y = y_co;
+    this.scale = scale;
+  }
+  display(){
+    noStroke();
+    // beak
+    fill(color(252, 207, 49));
+    triangle(this.x+200, this.y+63, this.x+165, this.y+60, this.x+165, this.y+70);
+    // tail
+    triangle(this.x+58, this.y+56, this.x+23, this.y+40, this.x+23, this.y+72);
+    // head
+    fill(color(160, 254, 101));
+    ellipse(this.x+150, this.y+67, 39, 33);
+    // body
+    arc(this.x+100, this.y+50, 100, 100, 0, PI);
+    // eye
+    fill(255);
+    arc(this.x+153, this.y+60, 18, 18, 0, PI);
+    fill(0);
+    arc(this.x+153, this.y+60, 12, 12, 0, PI);
+    // wing
+    fill(color(252, 207, 49));
+    arc(this.x+94, this.y+42, 65, 65, QUARTER_PI, PI+QUARTER_PI);
+  
 
   }
   
