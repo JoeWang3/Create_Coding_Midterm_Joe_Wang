@@ -4,25 +4,78 @@ let fly = false;
 let fly2 = false;
 let sunrise; 
 let sunset; 
+let moonrise;
+let moonset;
 let sunPosition; 
+let moonPosition;
 let t = 0; 
+let m = 0;
 let x3 = -500;
 let clouds = [];
+let stars = [];
 
 function setup() {
   createCanvas(1200, 800);
   frameRate(10);
   sunrise = createVector(50, 150);
   sunset = createVector(1150, 150);
+  moonrise = createVector(50, 150);
+  moonset = createVector(1150, 150);
   sunPosition = sunrise.copy();
+  moonPosition = moonrise.copy();
   for(let i = 0; i < 800; i += 300){
     let cloud = new Cloud(i, random(30, 80), random(5, 15));
     clouds.push(cloud);
   }
+  for(let i = 0; i < 100; i += 1){
+    let star = new Star(random(0, 1200), random(0, 300), random(1, 5));
+    stars.push(star);
+  }
 }
 
 function draw() {
+
   background(color(173, 216, 230));
+  // daytime
+  if(t > -0.1){
+    for(let i = 0; i < clouds.length; i++){
+      clouds[i].speed = random(5, 15);
+    }
+    x += 20;
+    x3 += 30;
+    if(x>=1200){
+      x = -1000;
+    }
+    if(x3>=1200){
+      x3 = -500;
+    }
+  }
+  // nighttime
+  else{
+    for(let i = 0; i < clouds.length; i++){
+      clouds[i].speed = random(3, 5);
+    }
+    if(x > 0){
+      x += 20;
+      if(x>=1200){
+        x = -1000;
+      }
+    }
+    if(x3 > 0){
+      x3 += 30;
+      if(x3>=1200){
+        x3 = -500;
+      }
+    }
+    
+
+  }
+
+  if (t >= 0){
+    m = t-1;
+  }else{
+    m = t+1;
+  }
 
   // draw the sun
   let x2 = lerp(sunrise.x, sunset.x, t);
@@ -38,16 +91,13 @@ function draw() {
   noStroke();
   ellipse(sunPosition.x, sunPosition.y, 100, 100);
 
+
   // draw the cloud;
   for(let i = 0; i < clouds.length; i++){
     clouds[i].display();
   }
   
-  // control the time
-  t += 0.005;
-  if (t > 1) {
-    t = 0; 
-  }
+  
 
   // draw the sunflowers
   sunFlowers = [];
@@ -80,10 +130,6 @@ function draw() {
 
   // draw the bird
   let bird = new Bird(x, 150, 0.7, color(82, 159, 231), color(252, 207, 49));
-  x+=20;
-  if(x>=1200){
-    x = -1000;
-  }
   if(fly == false){
     bird.displayUp();
     fly = true;
@@ -94,10 +140,6 @@ function draw() {
   }
 
   let bird2 = new Bird(x3, 200, 0.5, color(82, 159, 231), color(252, 207, 49));
-  x3+=30;
-  if(x3>=1200){
-    x3 = -500;
-  }
   if(fly == false){
     bird2.displayUp();
     fly2 = true;
@@ -107,14 +149,45 @@ function draw() {
     fly2 = false;
   }
 
-  // change the lightness of the scene
-  if(t <= 0.5){
-    fill(0, 0, 0, 255-600*t); 
+
+  
+  if(t > -0.1){
+    // change the lightness of the scene
+    if(t <= 0.4){
+      fill(0, 0, 0, 170-(t+0.1)*340); 
+    }else if(t >= 0.6){
+      fill(0, 0, 0, (t-0.6)*425); 
+    }else{
+      fill(0, 0, 0, 0);
+    }
+    noStroke();
+    rect(0, 0, width, height);
   }else{
-    fill(0, 0, 0, 728*(t-0.65)); 
+    fill(0, 0, 0, 170); 
+    rect(0, 0, width, height);
   }
+
+  // draw the moon
+  let x_moon = lerp(moonrise.x, moonset.x, m);
+  let y_moon = 150 - (sin(PI * m) * 100); 
+  moonPosition.set(x_moon, y_moon);
+  fill(255);
   noStroke();
-  rect(0, 0, width, height);
+  ellipse(moonPosition.x, moonPosition.y, 130, 130);
+
+  if(t <= -0.1){
+    for(let i = 0; i < stars.length; i++){
+      stars[i].display();
+    }
+
+  }
+
+  // control the time
+  t += 0.005;
+  if (t >= 1) {
+    t = -1; 
+  }
+  
 }
 
 function drawGrid(x, y, r) {
@@ -319,5 +392,22 @@ class Cloud{
     ellipse(125, 80, 80, 80); 
     ellipse(175, 80, 80, 80);
     pop();
+  }
+}
+
+class Star{
+  constructor(x_co, y_co, size){
+    this.x_co = x_co;
+    this.y_co = y_co;
+    this.size = size;
+  }
+  display(){
+    let chance = random(0, 3);
+    if(chance < 2.5){
+      fill(255);
+      ellipse(this.x_co, this.y_co, this.size, this.size);
+    }
+    // fill(255);
+    // ellipse(this.x_co, this.y_co, this.size, this.size);
   }
 }
