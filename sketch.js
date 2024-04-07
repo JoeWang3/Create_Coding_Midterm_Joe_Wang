@@ -13,6 +13,7 @@ let m = 0;
 let x3 = -500;
 let clouds = [];
 let stars = [];
+let fireflies = [];
 
 function setup() {
   createCanvas(1200, 800);
@@ -31,6 +32,11 @@ function setup() {
     let star = new Star(random(0, 1200), random(0, 300), random(1, 5));
     stars.push(star);
   }
+  for(let i = 0; i < 25; i += 1){
+    let ff = new Firefly(random(200, 600), random(500, 800), createVector(random(-2, 2), random(-2, 2)), createVector(random(-0.05, 0.05), random(-0.05, 0.05)));
+    fireflies.push(ff);
+  }
+
 }
 
 function draw() {
@@ -67,6 +73,8 @@ function draw() {
         x3 = -500;
       }
     }
+
+
     
 
   }
@@ -149,7 +157,6 @@ function draw() {
     fly2 = false;
   }
 
-
   
   if(t > -0.1){
     // change the lightness of the scene
@@ -178,6 +185,10 @@ function draw() {
   if(t <= -0.1){
     for(let i = 0; i < stars.length; i++){
       stars[i].display();
+    }
+
+    for(let i = 0; i < fireflies.length; i++){
+      fireflies[i].display();
     }
 
   }
@@ -410,4 +421,27 @@ class Star{
     // fill(255);
     // ellipse(this.x_co, this.y_co, this.size, this.size);
   }
+}
+
+class Firefly{
+  constructor(x_co, y_co, speed, acc){
+    this.x_co = x_co;
+    this.y_co = y_co;
+    this.speed = speed;
+    this.acc = acc;
+  }
+  display() {
+    this.x_co += this.speed.x;
+    this.y_co += this.speed.y;
+    this.speed.x += this.acc.x;
+    this.speed.y += this.acc.y;
+    this.speed = createVector(random(-1, 3), random(-3, 3));
+    this.acc = createVector(random(-0.5, 0.5), random(-0.5, 0.5));
+  
+    for(let i = 8; i > 0; i--){
+      fill(255, 255, 0, 255 - 20 * i);
+      ellipse(this.x_co, this.y_co, i , i ); 
+    }
+  }
+  
 }
