@@ -34,15 +34,21 @@ function setup() {
     let star = new Star(random(0, 1200), random(0, 300), random(1, 5));
     stars.push(star);
   }
-  for(let i = 0; i < 25; i += 1){
-    let ff = new Firefly(random(200, 600), random(500, 800), createVector(random(-2, 2), random(-2, 2)), createVector(random(-0.05, 0.05), random(-0.05, 0.05)));
+  for(let i = 0; i < 30; i += 1){
+    let ff = new Firefly(random(300, 600), random(500, 750), createVector(random(-2, 2), random(-2, 2)), createVector(random(-0.05, 0.05), random(-0.05, 0.05)));
     fireflies.push(ff);
   }
   for (let i = 0; i < 20; i++) {
     meteors.push(new Meteor());
   }
-  for (let i = 0; i < 300; i++) {
-    grasses.push(new Grass(i * 3 + 250, height));
+  for (let i = 0; i < 320; i++) {
+    grasses.push(new Grass(i * 3 + 250, height, random(30, 50)));
+  }
+  for (let i = 0; i < 270; i++) {
+    grasses.push(new Grass(i * 3 + 360, 670, random(20, 40)));
+  }
+  for (let i = 0; i < 240; i++) {
+    grasses.push(new Grass(i * 3 + 460, 530, random(10, 30)));
   }
   wind = 0;
   blow = true;
@@ -222,11 +228,11 @@ function draw() {
 
 function drawGrid(x, y, r) {
   let spacing = 10; 
-  stroke(0); 
+  stroke(255, 128, 153); 
   for (let i = x - r; i < x + r; i += spacing) {
     for (let j = y - r; j < y + r; j += spacing) {
       if (dist(x, y, i, j) <= r) {
-        strokeWeight(2);
+        strokeWeight(3);
         point(i, j);
       }
     }
@@ -260,21 +266,20 @@ class Sunflower{
     translate(this.x_co, this.y_co);
     scale(this.scale);
 
-    stroke(0);
+    stroke(34, 139, 34);
     line(0, 80, 0, 200);
 
     push();
     rotate(this.rotate); 
 
     noStroke();
-    fill(color(252, 207, 49));
     let i = 4;
     for (let angle = 0; angle < TWO_PI; angle += PI / 8) {
       if(angle == 3*PI/2){
-        fill(color(253, 131, 25));
+        fill(color(252, 207, 49));
       }
       else{
-        fill(color(252, 207, 49));
+        fill(color(255, 255, 77));
       }
       let x = cos(angle) * 60;
       let y = sin(angle) * 60;
@@ -290,8 +295,8 @@ class Sunflower{
     fill(255);
     circle(0, 0, 110);
 
-    stroke(0);
-    fill(color(160, 254, 101));
+    noStroke();
+    fill(color(50, 205, 50));
     ellipse(-20, 120, 40, 20);
     ellipse(20, 120, 40, 20);
     drawGrid(0, 0, 55);
@@ -300,56 +305,6 @@ class Sunflower{
   
 }
 
-// class Sunflower{
-//   constructor(x_co, y_co, scale){
-//     this.x_co = x_co;
-//     this.y_co = y_co;
-//     this.scale = scale;
-//     this.angle = 0; 
-
-//   }
-
-//   move(){
-//     this.angle = sin(frameCount / 5) * QUARTER_PI / 3;
-//   }
-
-//   display(){
-//     push();
-//     translate(this.x_co, this.y_co);
-//     scale(this.scale);
-
-//     stroke(0);
-//     line(0, 80, 0, 200);
-
-//     push();
-//     rotate(this.angle); 
-
-//     noStroke();
-//     fill(color(252, 207, 49));
-//     let i = 4;
-//     for (let angle = 0; angle < TWO_PI; angle += PI / 8) {
-//       let x = cos(angle) * 60;
-//       let y = sin(angle) * 60;
-//       push();
-//       translate(x, y);
-//       rotate(radians(i*22.5));
-//       ellipse(0, 0, 20, 40);
-//       pop();
-//       i++;
-//     }
-
-//     fill(255);
-//     circle(0, 0, 110);
-//     pop(); 
-    
-//     stroke(0);
-//     fill(color(160, 254, 101));
-//     ellipse(-20, 120, 40, 20);
-//     ellipse(20, 120, 40, 20);
-//     drawGrid(0, 0, 55);
-//     pop();
-//   }
-// }
 
 
 class Bird{
@@ -509,17 +464,17 @@ class Meteor {
 }
 
 class Grass {
-  constructor(x, y) {
+  constructor(x, y, h) {
     this.x = x; 
     this.y = y;
-    this.height = random(30, 50); 
+    this.height = h; 
     this.sway = random(-5, 5); 
   }
 
   
   swayWithWind(wind) {
     let swayAmount = this.sway + wind;
-    stroke(6 + 2 * this.sway, 50 + 0.5 * this.sway, 10 + 2 * this.sway);
+    stroke(127, 255, 0);
     strokeWeight(3);
     line(this.x, this.y, this.x + swayAmount, this.y - this.height + constrain(this.sway, -5, 5) + wind / 10);
     strokeWeight(2);
