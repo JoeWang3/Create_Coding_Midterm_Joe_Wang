@@ -14,6 +14,7 @@ let x3 = -500;
 let clouds = [];
 let stars = [];
 let fireflies = [];
+let meteors = [];
 
 function setup() {
   createCanvas(1200, 800);
@@ -35,6 +36,9 @@ function setup() {
   for(let i = 0; i < 25; i += 1){
     let ff = new Firefly(random(200, 600), random(500, 800), createVector(random(-2, 2), random(-2, 2)), createVector(random(-0.05, 0.05), random(-0.05, 0.05)));
     fireflies.push(ff);
+  }
+  for (let i = 0; i < 20; i++) {
+    meteors.push(new Meteor());
   }
 
 }
@@ -189,6 +193,10 @@ function draw() {
 
     for(let i = 0; i < fireflies.length; i++){
       fireflies[i].display();
+    }
+    for (let i = 0; i < meteors.length; i++) {
+      meteors[i].move();
+      meteors[i].display();
     }
 
   }
@@ -435,13 +443,43 @@ class Firefly{
     this.y_co += this.speed.y;
     this.speed.x += this.acc.x;
     this.speed.y += this.acc.y;
-    this.speed = createVector(random(-1, 3), random(-3, 3));
+    this.speed = createVector(random(-2, 3), random(-3, 3));
     this.acc = createVector(random(-0.5, 0.5), random(-0.5, 0.5));
   
     for(let i = 8; i > 0; i--){
-      fill(255, 255, 0, 255 - 20 * i);
-      ellipse(this.x_co, this.y_co, i , i ); 
+      fill(255, 255, 0, 255 - 30 * i);
+      ellipse(this.x_co, this.y_co, i*1.5 , i *1.5); 
     }
   }
   
+}
+
+class Meteor {
+  constructor() {
+    this.x_co = random(width);
+    this.y_co = 0;
+    this.size = random(3, 6);
+    this.speed = random(1, 5);
+  }
+
+  display() {
+    if(this.y_co < 300){
+    fill(255);
+    ellipse(this.x_co, this.y_co, this.size, this.size);
+    stroke(255);
+    line(this.x_co, this.y_co, this.x_co - this.size*3, this.y_co - this.size*3);
+    noStroke();
+    }
+  }
+
+  move() {
+    this.x_co += this.speed / 2; 
+    this.y_co += this.speed; 
+    if (this.y_co > height) {
+      this.x_co = random(width);
+      this.y_co = -this.size;
+      this.size = random(5, 10);
+      this.speed = random(1, 5);
+    }
+  }
 }
