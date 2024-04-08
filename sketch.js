@@ -15,6 +15,7 @@ let clouds = [];
 let stars = [];
 let fireflies = [];
 let meteors = [];
+var grasses = [];
 
 function setup() {
   createCanvas(1200, 800);
@@ -40,6 +41,11 @@ function setup() {
   for (let i = 0; i < 20; i++) {
     meteors.push(new Meteor());
   }
+  for (let i = 0; i < 300; i++) {
+    grasses.push(new Grass(i * 3 + 250, height));
+  }
+  wind = 0;
+  blow = true;
 
 }
 
@@ -107,6 +113,11 @@ function draw() {
   // draw the cloud;
   for(let i = 0; i < clouds.length; i++){
     clouds[i].display();
+  }
+
+  breeze();
+  for (let g of grasses) {
+    g.swayWithWind(wind);
   }
   
   
@@ -219,6 +230,21 @@ function drawGrid(x, y, r) {
         point(i, j);
       }
     }
+  }
+}
+
+function breeze() {
+  if (wind == 0) {
+    blow = true;
+  }
+  if (wind < 10 && blow == true) {
+    wind = wind + 0.5;
+  }
+  if (wind == 7) {
+    blow = false;
+  }
+  if (wind > 0 && blow == false) {
+    wind = wind - 0.5;
   }
 }
 
@@ -386,9 +412,7 @@ class Bird{
   }
 }
 
-class Grass{
 
-}
 
 class Cloud{
   constructor(x_co,y_co, speed){
@@ -481,5 +505,23 @@ class Meteor {
       this.size = random(5, 10);
       this.speed = random(1, 5);
     }
+  }
+}
+
+class Grass {
+  constructor(x, y) {
+    this.x = x; 
+    this.y = y;
+    this.height = random(30, 50); 
+    this.sway = random(-5, 5); 
+  }
+
+  
+  swayWithWind(wind) {
+    let swayAmount = this.sway + wind;
+    stroke(6 + 2 * this.sway, 50 + 0.5 * this.sway, 10 + 2 * this.sway);
+    strokeWeight(3);
+    line(this.x, this.y, this.x + swayAmount, this.y - this.height + constrain(this.sway, -5, 5) + wind / 10);
+    strokeWeight(2);
   }
 }
