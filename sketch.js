@@ -16,7 +16,11 @@ let nightclouds = [];
 let stars = [];
 let fireflies = [];
 let meteors = [];
-var grasses = [];
+let grasses = [];
+let leaves = [];
+let nightleaves = [];
+let s = 0.5;
+
 
 function setup() {
   createCanvas(1200, 800);
@@ -40,6 +44,10 @@ function setup() {
     let ff = new Firefly(random(300, 600), random(500, 750), createVector(random(-2, 2), random(-2, 2)), createVector(random(-0.05, 0.05), random(-0.05, 0.05)));
     fireflies.push(ff);
   }
+  for(let i = 0; i < 30; i += 1){
+    let ff = new Firefly(random(800, 1100), random(500, 750), createVector(random(-2, 2), random(-2, 2)), createVector(random(-0.05, 0.05), random(-0.05, 0.05)));
+    fireflies.push(ff);
+  }
   for (let i = 0; i < 20; i++) {
     meteors.push(new Meteor());
   }
@@ -52,6 +60,9 @@ function setup() {
   for (let i = 0; i < 240; i++) {
     grasses.push(new Grass(i * 3 + 460, 530, random(10, 30)));
   }
+  for (let i = 0; i < 210; i++) {
+    grasses.push(new Grass(i * 3 + 560, 410, random(5, 20)));
+  }
   wind = 0;
   blow = true;
 
@@ -60,9 +71,30 @@ function setup() {
 function draw() {
 
   background(color(173, 216, 230));
+
+  // draw the tree
+  let tree = new BareTree(0, 0);
+  tree.display();
+
   // daytime
   if(t > -0.1){
     nightclouds = []
+    leaves = []
+    leaves.push(new Leaf(219, 384, PI / 6, s));
+    leaves.push(new Leaf(258, 375, PI / 6, s));
+    leaves.push(new Leaf(217, 408, PI * 1.1, s));
+    leaves.push(new Leaf(260, 396, PI * 1.1, s));
+    leaves.push(new Leaf(175, 305, PI / 8, s));
+    leaves.push(new Leaf(153, 308, 1.5 * PI, s));
+    leaves.push(new Leaf(228, 298, 0, s));
+    leaves.push(new Leaf(51, 316, 0, s));
+    s += 0.005;
+    nightleaves = leaves;
+
+    for (let i = 0; i < leaves.length; i++) {
+      leaves[i].display();
+    }
+
     for(let i = 0; i < clouds.length; i++){
       clouds[i].speed = random(5, 15);
     }
@@ -77,6 +109,10 @@ function draw() {
   }
   // nighttime
   else{
+    for (let i = 0; i < leaves.length; i++) {
+      leaves[i].display();
+      leaves[i].y += 5;
+    }
     if(random(0, 5) > 3){
       let cloud = new Cloud(random(0, 800), random(0, 150), random(5, 30));
       nightclouds.push(cloud);}
@@ -101,10 +137,7 @@ function draw() {
         x3 = -500;
       }
     }
-
-
-    
-
+    s = 0.5;
   }
 
   if (t >= 0){
@@ -133,10 +166,14 @@ function draw() {
     clouds[i].display();
   }
 
+  // draw the grass
   breeze();
-  for (let g of grasses) {
-    g.swayWithWind(wind);
+  for (let i = 0; i < grasses.length; i++) {
+    grasses[i].swayWithWind(wind);
   }
+
+
+  
   
   
 
@@ -170,7 +207,7 @@ function draw() {
   }
 
   // draw the bird
-  let bird = new Bird(x, 150, 0.7, color(82, 159, 231), color(252, 207, 49));
+  let bird = new Bird(x, 150, 0.7, color(0, 123, 167), color(255, 255, 0));
   if(fly == false){
     bird.displayUp();
     fly = true;
@@ -180,7 +217,7 @@ function draw() {
     fly = false;
   }
 
-  let bird2 = new Bird(x3, 200, 0.5, color(82, 159, 231), color(252, 207, 49));
+  let bird2 = new Bird(x3, 200, 0.5, color(0, 255, 255), color(255, 165, 0));
   if(fly == false){
     bird2.displayUp();
     fly2 = true;
@@ -336,6 +373,7 @@ class Bird{
     fill(color(252, 207, 49));
     triangle(200, 63, 165, 60, 165, 70);
     // tail
+    fill(this.wingColor);
     triangle(58, 56, 23, 40, 23, 72);
     // head
     fill(this.bodyColor);
@@ -361,6 +399,7 @@ class Bird{
     fill(color(252, 207, 49));
     triangle(200, 63, 165, 60, 165, 70);
     // tail
+    fill(this.wingColor);
     triangle(58, 56, 23, 40, 23, 72);
     // head
     fill(this.bodyColor);
@@ -490,3 +529,86 @@ class Grass {
     strokeWeight(2);
   }
 }
+
+class BareTree {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  display() {
+    fill(139, 69, 19); 
+    noStroke();
+    rect(0, 400, 150, 400);
+    triangle(150, 600, 150, 800, 200, 800);
+    beginShape();
+    vertex(100, 400);
+    vertex(250, 280);
+    vertex(270, 288);
+    vertex(150, 450);
+    endShape();
+
+    beginShape();
+    vertex(189, 389);
+    vertex(284, 369);
+    vertex(283, 386);
+    vertex(172, 421);
+    endShape();
+
+    beginShape();
+    vertex(148, 366);
+    vertex(155, 285);
+    vertex(169, 286);
+    vertex(185, 338);
+    endShape();
+
+    beginShape();
+    vertex(61, 400);
+    vertex(0, 290);
+    vertex(0, 364);
+    vertex(15, 400);
+    endShape();
+
+    beginShape();
+    vertex(25, 336);
+    vertex(86, 289);
+    vertex(94, 302);
+    vertex(43, 370);
+    endShape();
+  }
+}
+
+
+class Leaf {
+  constructor(x, y, angle, scale) {
+    this.x = x;
+    this.y = y;
+    this.angle = angle;
+    this.scale = scale;
+  }
+
+  display() {
+    push(); 
+    translate(this.x, this.y); 
+    rotate(this.angle); 
+    scale(this.scale); 
+    
+    stroke(0);
+    strokeWeight(1);
+    fill(0, 255, 0);
+
+    beginShape();
+    vertex(0, 0); 
+    bezierVertex(-20, -40, 40, -60, 0, 0);
+    endShape(CLOSE);
+
+    line(0, 0, 9, -36);
+    line(3, -15, -3, -21);
+    line(6, -25, 0, -31);
+    line(3, -15, 11, -19);
+    line(6, -25, 13, -28);
+
+    pop(); 
+  }
+}
+
