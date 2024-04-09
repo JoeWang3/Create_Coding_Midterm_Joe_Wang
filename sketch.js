@@ -12,6 +12,7 @@ let t = 0;
 let m = 0;
 let x3 = -500;
 let clouds = [];
+let nightclouds = [];
 let stars = [];
 let fireflies = [];
 let meteors = [];
@@ -30,6 +31,7 @@ function setup() {
     let cloud = new Cloud(i, random(30, 80), random(5, 15));
     clouds.push(cloud);
   }
+
   for(let i = 0; i < 100; i += 1){
     let star = new Star(random(0, 1200), random(0, 300), random(1, 5));
     stars.push(star);
@@ -60,6 +62,7 @@ function draw() {
   background(color(173, 216, 230));
   // daytime
   if(t > -0.1){
+    nightclouds = []
     for(let i = 0; i < clouds.length; i++){
       clouds[i].speed = random(5, 15);
     }
@@ -74,9 +77,18 @@ function draw() {
   }
   // nighttime
   else{
+    if(random(0, 5) > 3){
+      let cloud = new Cloud(random(0, 800), random(0, 150), random(5, 30));
+      nightclouds.push(cloud);}
+    
     for(let i = 0; i < clouds.length; i++){
       clouds[i].speed = random(3, 5);
     }
+    for(let i = 0; i < nightclouds.length; i++){
+      nightclouds[i].speed = random(3, 5);
+      nightclouds[i].display();
+    }
+
     if(x > 0){
       x += 20;
       if(x>=1200){
@@ -405,8 +417,6 @@ class Star{
       fill(255);
       ellipse(this.x_co, this.y_co, this.size, this.size);
     }
-    // fill(255);
-    // ellipse(this.x_co, this.y_co, this.size, this.size);
   }
 }
 
